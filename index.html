@@ -31,6 +31,20 @@
 
   <title>foxmap</title>
   <link rel="manifest" href="manifest.json">
+
+  <!--
+    A two-finger swipe over the map pans it, so it must never also reach the
+    browser's own back/forward gesture, or its rubber-band. Flutter's engine
+    does call preventDefault on the wheel events it handles, but overscroll
+    history navigation is decided outside that path and this property is the
+    only guaranteed way to switch it off. Nothing here scrolls the page anyway:
+    the app is a single full-viewport canvas.
+  -->
+  <style>
+    html, body {
+      overscroll-behavior: none;
+    }
+  </style>
 </head>
 <body>
   <!--
