@@ -24,10 +24,13 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="foxmap">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png?v=2">
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <!--
+    Bump ?v= whenever an icon changes. Browsers cache favicons by URL, apart
+    from the HTTP cache, so a hard refresh or incognito tab keeps the old one.
+  -->
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v=2"/>
 
   <title>foxmap</title>
   <link rel="manifest" href="manifest.json">
@@ -44,17 +47,142 @@
     html, body {
       overscroll-behavior: none;
     }
+
+    /* Matches the app's dark theme so the hand-over to Flutter doesn't flash. */
+    body {
+      margin: 0;
+      background: #19120c;
+    }
+
+    #splash {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      background: #19120c;
+      color: #d8c2b2;
+      font: 14px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      transition: opacity 0.4s ease-out;
+    }
+
+    #splash.splash-done {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #splash-logo {
+      width: 96px;
+      height: 96px;
+      border-radius: 22px;
+      animation: splash-pulse 1.6s ease-in-out infinite;
+    }
+
+    #splash-title {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 600;
+      color: #f0dfd3;
+    }
+
+    #splash-track {
+      width: min(240px, 60vw);
+      height: 4px;
+      border-radius: 2px;
+      background: #2f261e;
+      overflow: hidden;
+    }
+
+    #splash-bar {
+      width: 0;
+      height: 100%;
+      border-radius: 2px;
+      background: #fdb975;
+    }
+
+    #splash.splash-failed #splash-logo {
+      animation: none;
+    }
+
+    #splash.splash-failed #splash-bar {
+      background: #ffb4ab;
+    }
+
+    #splash-slow {
+      display: none;
+      margin: 0;
+      text-align: center;
+    }
+
+    #splash.splash-slow:not(.splash-failed) #splash-slow {
+      display: block;
+    }
+
+    #splash-reload {
+      margin-top: 8px;
+      padding: 6px 16px;
+      border: 1px solid #fdb975;
+      border-radius: 16px;
+      background: none;
+      color: #fdb975;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    @keyframes splash-pulse {
+      50% { transform: scale(0.94); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #splash-logo { animation: none; }
+    }
   </style>
 </head>
 <body>
   <!--
-    You can customize the "flutter_bootstrap.js" script.
-    This is useful to provide a custom configuration to the Flutter loader
-    or to give the user feedback during the initialization process.
-
-    For more details:
-    * https://docs.flutter.dev/platform-integration/web/initialization
+    Landing page shown until Flutter paints its first frame. Plain HTML and
+    CSS so it appears before any app code downloads; web/flutter_bootstrap.js
+    drives the bar, and the script below removes it.
   -->
+  <div id="splash">
+    <img id="splash-logo" src="splash/fox.webp" alt="" width="96" height="96">
+    <p id="splash-title">Foxhole Companion</p>
+    <div id="splash-track" role="progressbar" aria-label="Loading" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div id="splash-bar"></div>
+    </div>
+    <div id="splash-status" aria-live="polite">Loading</div>
+    <p id="splash-slow">
+      This is taking longer than usual.<br>
+      <button id="splash-reload" type="button" onclick="location.reload()">Reload</button>
+    </p>
+  </div>
+
+  <!--
+    Dismiss the splash here, not in flutter_bootstrap.js. The engine fires
+    flutter-first-frame whatever bootstrap the HTTP cache serves, so a stale
+    bootstrap from an older build can't leave the splash covering a running app.
+  -->
+  <script>
+    (function () {
+      var slowLoadMs = 20000;
+      var splash = document.getElementById('splash');
+
+      // Offers a reload but keeps waiting: a slow connection is not a failure.
+      var slowTimer = setTimeout(function () {
+        splash.classList.add('splash-slow');
+      }, slowLoadMs);
+
+      window.addEventListener('flutter-first-frame', function () {
+        clearTimeout(slowTimer);
+        splash.classList.add('splash-done');
+        setTimeout(function () { splash.remove(); }, 400);
+      }, { once: true });
+    })();
+  </script>
+
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

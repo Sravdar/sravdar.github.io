@@ -38,10 +38,65 @@ addEventListener("message", eventListener);
 if (!window._flutter) {
   window._flutter = {};
 }
-_flutter.buildConfig = {"engineRevision":"06a2e2a110089dff50fe635cffd2a61e1b24fbcd","wasmHashes":{"canvaskit.wasm":"fbed517a43e82452404446683f00f2e876d835aed84410695759e67b6bb01cd3","chromium/canvaskit.wasm":"ae8ff1d858140f7b1300ced3fa89fb8c9dce0a400a0f4f1e11f6dcfb3315fdcf","skwasm.wasm":"e540fd5e8303b7b68ec2718cb49e9c421f8ade3075b15e02a7059a62654df9a1","skwasm_heavy.wasm":"565f5cc1cca6ab120f11934b105f01fec4b58b480c82e0889dca93af8e6f8635","webparagraph/canvaskit.wasm":"0ce1b05082efdc8529550e8a01f6ff0593972d55525035010e26f5600aa9f254","wimp.wasm":"e924eaafd801d41e017d178f3fd5cf8a417f641fe35c9ed34a4e1d7582283e0c","main.dart.wasm":"37c51f0260bf718bc3a0d4d599419a37734e19d2943524768aca67effd73cccb"},"builds":[{"compileTarget":"dart2wasm","renderer":"skwasm","mainWasmPath":"main.dart.wasm","jsSupportRuntimePath":"main.dart.mjs"},{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js"}]};
+_flutter.buildConfig = {"engineRevision":"06a2e2a110089dff50fe635cffd2a61e1b24fbcd","wasmHashes":{"canvaskit.wasm":"fbed517a43e82452404446683f00f2e876d835aed84410695759e67b6bb01cd3","chromium/canvaskit.wasm":"ae8ff1d858140f7b1300ced3fa89fb8c9dce0a400a0f4f1e11f6dcfb3315fdcf","skwasm.wasm":"e540fd5e8303b7b68ec2718cb49e9c421f8ade3075b15e02a7059a62654df9a1","skwasm_heavy.wasm":"565f5cc1cca6ab120f11934b105f01fec4b58b480c82e0889dca93af8e6f8635","webparagraph/canvaskit.wasm":"0ce1b05082efdc8529550e8a01f6ff0593972d55525035010e26f5600aa9f254","wimp.wasm":"e924eaafd801d41e017d178f3fd5cf8a417f641fe35c9ed34a4e1d7582283e0c","main.dart.wasm":"dbd4e87a85f400fe2c258f09ece13d6f06249ce09550f85062f9a9b7fce81144"},"builds":[{"compileTarget":"dart2wasm","renderer":"skwasm","mainWasmPath":"main.dart.wasm","jsSupportRuntimePath":"main.dart.mjs"},{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js"}]};
 
-_flutter.loader.load({
-  serviceWorkerSettings: {
-    serviceWorkerVersion: "395819699" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */
+
+// Drives the landing page in index.html from the loader's stage callbacks.
+// The loader reports stages, not bytes, so the bar jumps to each stage's mark
+// and then creeps toward the next one without reaching it.
+(function () {
+  const splash = document.getElementById('splash');
+  const bar = document.getElementById('splash-bar');
+  const track = document.getElementById('splash-track');
+  const status = document.getElementById('splash-status');
+
+  // A cached index.html from before the landing page has no splash. Load
+  // plainly rather than throw before load() is ever reached.
+  if (!splash || !bar || !track || !status) {
+    _flutter.loader.load();
+    return;
   }
-});
+
+  let creep = null;
+
+  function setStage(reached, next, label) {
+    clearTimeout(creep);
+    bar.style.transition = 'width 0.3s ease-out';
+    bar.style.width = reached + '%';
+    track.setAttribute('aria-valuenow', String(reached));
+    status.textContent = label;
+    if (next <= reached) return;
+    // Held below the next mark so the bar never claims a stage early.
+    creep = setTimeout(function () {
+      bar.style.transition = 'width 12s cubic-bezier(0.1, 0.6, 0.3, 1)';
+      bar.style.width = (next - 5) + '%';
+    }, 300);
+  }
+
+  function fail(error) {
+    clearTimeout(creep);
+    const frozenWidth = getComputedStyle(bar).width;
+    bar.style.transition = 'none';
+    bar.style.width = frozenWidth;
+    status.textContent = 'Foxmap failed to load. Refresh the page to try again.';
+    splash.classList.add('splash-failed');
+    console.error(error);
+  }
+
+  setStage(10, 60, 'Downloading app');
+
+  // Errors inside the callback need their own catch: the loader calls it
+  // from the engine later, outside the promise that load() returns.
+  _flutter.loader.load({
+    onEntrypointLoaded: async function (engineInitializer) {
+      try {
+        setStage(60, 85, 'Starting engine');
+        const appRunner = await engineInitializer.initializeEngine();
+        setStage(85, 100, 'Opening app');
+        await appRunner.runApp();
+      } catch (error) {
+        fail(error);
+      }
+    },
+  }).catch(fail);
+})();
