@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "updatedAt": "2026-09-30T07:55:38.633Z",
+  "carousels": [
+    {
+      "id": "homescreen",
+      "settings": {},
+      "slides": [
+        {
+          "id": "war140-end",
+          "title": [
+            {
+              "text": "War 140 Ends: "
+            },
+            {
+              "text": "Collonial",
+              "color": "#0f6e28"
+            },
+            {
+              "text": " Victory!"
+            }
+          ],
+          "backgroundColor": "#0e1419",
+          "foregroundImage": "https://raw.githubusercontent.com/Sravdar/sravdar.github.io/foxmap-data/carousel/fox-avatar/fa_nuke_explode.webp",
+          "desc": "War has lasted 35 days 13 hours 46 minutes"
+        },
+        {
+          "id": "backend-soon",
+          "title": "Comming Soon",
+          "backgroundColor": "81694f",
+          "foregroundImage": "https://raw.githubusercontent.com/Sravdar/sravdar.github.io/foxmap-data/carousel/fox-avatar/fa_okay.webp",
+          "desc": "Backend implemantation and live map sync between users is work in progress"
+        }
+      ]
+    }
+  ]
+}
