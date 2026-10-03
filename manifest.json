@@ -1,11 +1,11 @@
 {
-    "name": "foxmap",
-    "short_name": "foxmap",
+    "name": "needbmat",
+    "short_name": "needbmat",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#19120c",
     "theme_color": "#19120c",
-    "description": "Foxhole application.",
+    "description": "Foxhole application. Check map, make plans. More comming soon!",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
