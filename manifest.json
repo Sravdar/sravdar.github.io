@@ -5,7 +5,7 @@
     "display": "standalone",
     "background_color": "#19120c",
     "theme_color": "#19120c",
-    "description": "A new Flutter project.",
+    "description": "Foxhole application.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
