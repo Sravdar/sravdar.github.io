@@ -1,12 +1,17 @@
 {
-    "name": "needbmat",
-    "short_name": "needbmat",
+    "id": "/",
+    "name": "NeedBmat — Foxhole Companion",
+    "short_name": "NeedBmat",
+    "description": "The Foxhole Companion: a live war map with territory control from the official War API, plus drawing and measuring tools for planning operations.",
+    "lang": "en",
+    "dir": "ltr",
     "start_url": ".",
+    "scope": ".",
     "display": "standalone",
     "background_color": "#19120c",
     "theme_color": "#19120c",
-    "description": "Foxhole application. Check map, make plans. More comming soon!",
-    "orientation": "portrait-primary",
+    "orientation": "any",
+    "categories": ["games", "utilities", "navigation"],
     "prefer_related_applications": false,
     "icons": [
         {

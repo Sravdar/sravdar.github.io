@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -18,21 +19,42 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="description"
+    content="The Foxhole Companion: a live war map with territory control from the official War API, plus drawing and measuring tools for planning operations.">
+  <meta name="application-name" content="NeedBmat">
+  <meta name="theme-color" content="#19120c">
+  <link rel="canonical" href="https://needbmat.com/">
+
+  <!-- Link previews. Crawlers don't resolve relative URLs, so these stay absolute. -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="NeedBmat">
+  <meta property="og:title" content="NeedBmat — Foxhole Companion">
+  <meta property="og:description"
+    content="Live Foxhole war map with territory control, plus drawing and measuring tools for planning operations.">
+  <meta property="og:url" content="https://needbmat.com/">
+  <meta property="og:image" content="https://needbmat.com/icons/Icon-512.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="NeedBmat fox logo">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="NeedBmat — Foxhole Companion">
+  <meta name="twitter:description"
+    content="Live Foxhole war map with territory control, plus drawing and measuring tools for planning operations.">
+  <meta name="twitter:image" content="https://needbmat.com/icons/Icon-512.png">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="foxmap">
+  <meta name="apple-mobile-web-app-title" content="NeedBmat">
   <link rel="apple-touch-icon" href="icons/Icon-192.png?v=2">
 
   <!--
     Bump ?v= whenever an icon changes. Browsers cache favicons by URL, apart
     from the HTTP cache, so a hard refresh or incognito tab keeps the old one.
   -->
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v=2"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v=2" />
 
-  <title>foxmap</title>
+  <title>NeedBmat - Foxhole Companion</title>
   <link rel="manifest" href="manifest.json">
 
   <!--
@@ -44,7 +66,8 @@
     the app is a single full-viewport canvas.
   -->
   <style>
-    html, body {
+    html,
+    body {
       overscroll-behavior: none;
     }
 
@@ -81,11 +104,25 @@
       animation: splash-pulse 1.6s ease-in-out infinite;
     }
 
+    #splash-header {
+      text-align: center;
+    }
+
     #splash-title {
       margin: 0;
       font-size: 20px;
       font-weight: 600;
       color: #f0dfd3;
+    }
+
+    #splash-subtitle {
+      margin: 2px 0 0 0;
+      /* Tight top margin binds it directly below the title */
+      font-size: 13px;
+      font-weight: 400;
+      color: #a89a8e;
+      /* Soft accent matching the warm dark theme */
+      letter-spacing: 0.5px;
     }
 
     #splash-track {
@@ -133,14 +170,19 @@
     }
 
     @keyframes splash-pulse {
-      50% { transform: scale(0.94); }
+      50% {
+        transform: scale(0.94);
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      #splash-logo { animation: none; }
+      #splash-logo {
+        animation: none;
+      }
     }
   </style>
 </head>
+
 <body>
   <!--
     Landing page shown until Flutter paints its first frame. Plain HTML and
@@ -149,8 +191,14 @@
   -->
   <div id="splash">
     <img id="splash-logo" src="splash/fox.webp" alt="" width="96" height="96">
-    <p id="splash-title">Foxhole Companion</p>
-    <div id="splash-track" role="progressbar" aria-label="Loading" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+
+    <div id="splash-header">
+      <p id="splash-title">NeedBmat</p>
+      <p id="splash-subtitle">Foxhole Companion</p>
+    </div>
+
+    <div id="splash-track" role="progressbar" aria-label="Loading" aria-valuemin="0" aria-valuemax="100"
+      aria-valuenow="0">
       <div id="splash-bar"></div>
     </div>
     <div id="splash-status" aria-live="polite">Loading</div>
@@ -185,4 +233,5 @@
 
   <script src="flutter_bootstrap.js" async></script>
 </body>
+
 </html>
