@@ -231,7 +231,19 @@
     })();
   </script>
 
-  <script src="flutter_bootstrap.js" async></script>
+  <!--
+    Fetch the bootstrap past the HTTP cache on every load. It names this
+    build's entrypoints, so a cached copy would start the previous build; it
+    is small, and the entrypoints it names stay cacheable.
+  -->
+  <script>
+    (function () {
+      var script = document.createElement('script');
+      script.src = 'flutter_bootstrap.js?t=' + Date.now();
+      script.async = true;
+      document.body.appendChild(script);
+    })();
+  </script>
 </body>
 
 </html>

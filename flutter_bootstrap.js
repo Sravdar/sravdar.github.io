@@ -38,8 +38,31 @@ addEventListener("message", eventListener);
 if (!window._flutter) {
   window._flutter = {};
 }
-_flutter.buildConfig = {"engineRevision":"06a2e2a110089dff50fe635cffd2a61e1b24fbcd","wasmHashes":{"canvaskit.wasm":"fbed517a43e82452404446683f00f2e876d835aed84410695759e67b6bb01cd3","chromium/canvaskit.wasm":"ae8ff1d858140f7b1300ced3fa89fb8c9dce0a400a0f4f1e11f6dcfb3315fdcf","skwasm.wasm":"e540fd5e8303b7b68ec2718cb49e9c421f8ade3075b15e02a7059a62654df9a1","skwasm_heavy.wasm":"565f5cc1cca6ab120f11934b105f01fec4b58b480c82e0889dca93af8e6f8635","webparagraph/canvaskit.wasm":"0ce1b05082efdc8529550e8a01f6ff0593972d55525035010e26f5600aa9f254","wimp.wasm":"e924eaafd801d41e017d178f3fd5cf8a417f641fe35c9ed34a4e1d7582283e0c","main.dart.wasm":"f686002398f893619d3493da4f0803eb5f0b9a682c621a0cd5d125d6af12bf18"},"builds":[{"compileTarget":"dart2wasm","renderer":"skwasm","mainWasmPath":"main.dart.wasm","jsSupportRuntimePath":"main.dart.mjs"},{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js"}]};
+_flutter.buildConfig = {"engineRevision":"06a2e2a110089dff50fe635cffd2a61e1b24fbcd","wasmHashes":{"canvaskit.wasm":"fbed517a43e82452404446683f00f2e876d835aed84410695759e67b6bb01cd3","chromium/canvaskit.wasm":"ae8ff1d858140f7b1300ced3fa89fb8c9dce0a400a0f4f1e11f6dcfb3315fdcf","skwasm.wasm":"e540fd5e8303b7b68ec2718cb49e9c421f8ade3075b15e02a7059a62654df9a1","skwasm_heavy.wasm":"565f5cc1cca6ab120f11934b105f01fec4b58b480c82e0889dca93af8e6f8635","webparagraph/canvaskit.wasm":"0ce1b05082efdc8529550e8a01f6ff0593972d55525035010e26f5600aa9f254","wimp.wasm":"e924eaafd801d41e017d178f3fd5cf8a417f641fe35c9ed34a4e1d7582283e0c","main.dart.wasm":"1034f8c807642d568a63edb227a0922ebc811ef471d15c00d8a089436775020c"},"builds":[{"compileTarget":"dart2wasm","renderer":"skwasm","mainWasmPath":"main.dart.wasm","jsSupportRuntimePath":"main.dart.mjs"},{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js"}]};
 
+
+// Names this build's entrypoints with a per-build query, so an update is
+// downloaded at once while an unchanged build stays in the HTTP cache. Hosts
+// may send no Cache-Control, and a browser then reuses a stale main.dart.js
+// for hours. The token is main.dart.wasm's hash, else the build's random
+// service worker version; with neither (a debug run) the names stay plain.
+(function () {
+  const config = _flutter.buildConfig;
+  const hashes = config.wasmHashes || {};
+  const token = hashes['main.dart.wasm'] || "3341782070" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */;
+  if (!token) return;
+  const versioned = (path) => path + '?v=' + encodeURIComponent(token);
+  for (const build of config.builds) {
+    if (build.compileTarget === 'dart2wasm') {
+      build.mainWasmPath = versioned(build.mainWasmPath || 'main.dart.wasm');
+      build.jsSupportRuntimePath = versioned(
+        build.jsSupportRuntimePath || 'main.dart.mjs',
+      );
+    } else if (build.compileTarget === 'dart2js') {
+      build.mainJsPath = versioned(build.mainJsPath || 'main.dart.js');
+    }
+  }
+})();
 
 // Drives the landing page in index.html from the loader's stage callbacks.
 // The loader reports stages, not bytes, so the bar jumps to each stage's mark
