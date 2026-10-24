@@ -49,7 +49,7 @@ _flutter.buildConfig = {"engineRevision":"06a2e2a110089dff50fe635cffd2a61e1b24fb
 (function () {
   const config = _flutter.buildConfig;
   const hashes = config.wasmHashes || {};
-  const token = hashes['main.dart.wasm'] || "684315518" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */;
+  const token = hashes['main.dart.wasm'] || "2626043649" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */;
   if (!token) return;
   const versioned = (path) => path + '?v=' + encodeURIComponent(token);
   for (const build of config.builds) {
