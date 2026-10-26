@@ -18,7 +18,8 @@
               "x": 0.0,
               "y": -0.5
             }
-          }
+          },
+          "isActive": false
         },
         {
           "id": "War141-start-date",
@@ -50,11 +51,29 @@
           "expireAt": "2026-10-01T17:00:00.000Z"
         },
         {
+          "id": "war141-end",
+          "title": [
+            {
+              "text": "War 141 Ends: "
+            },
+            {
+              "text": "Warden",
+              "color": "#245682"
+            },
+            {
+              "text": " Victory!"
+            }
+          ],
+          "backgroundColor": "#0e1419",
+          "foregroundImage": "https://raw.githubusercontent.com/Sravdar/sravdar.github.io/foxmap-data/carousel/fox-avatar/fa_nuke_explode.webp",
+          "desc": "War has lasted 35 days 13 hours 46 minutes"
+        },
+        {
           "id": "backend-soon",
-          "title": "Comming Soon",
+          "title": "Backend available",
           "backgroundColor": "81694f",
-          "foregroundImage": "https://raw.githubusercontent.com/Sravdar/sravdar.github.io/foxmap-data/carousel/fox-avatar/fa_okay.webp",
-          "desc": "Backend implemantation and live map sync between users is work in progress"
+          "foregroundImage": "https://raw.githubusercontent.com/Sravdar/sravdar.github.io/foxmap-data/carousel/fox-avatar/fa_plan_together.webp",
+          "desc": "Contact \"Sravdar\" in discord to get your server instance!"
         }
       ]
     }
